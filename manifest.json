@@ -1,10 +1,11 @@
 {
     "name": "Twitch gift autoclick",
-    "version": "0.6",
-    "manifest_version": 2,
     "description": "Automatic click to +50 gift coin",
+    "version": "1.0",
+    "manifest_version": 3,
     "icons": {
         "16": "icon.png",
+        "32": "icon.png",
         "48": "icon.png",
         "128": "icon.png"
     },

@@ -1,32 +1,53 @@
-chrome.extension.sendMessage({}, function (response) {
-    var readyStateCheckInterval = setInterval(function () {
-        if (document.readyState === "complete") {
-            clearInterval(readyStateCheckInterval);
+// @ts-check
 
-            // ----------------------------------------------------------
-            // This part of the script triggers when page is done loading
-            startObserver();
-            // ----------------------------------------------------------
-        }
-    }, 10);
-});
+function domready(callback) {
+    if (
+        document.readyState === "complete" ||
+        document.readyState !== "loading"
+    ) {
+        callback();
+    } else {
+        document.addEventListener("DOMContentLoaded", callback);
+    }
+}
 
-function startObserver() {
-    const observer = new MutationObserver(function (mutationsList) {
-        for (const mutation of mutationsList) {
-            for (const addedNode of mutation.addedNodes) {
-                if (addedNode.querySelector && addedNode.querySelector(".claimable-bonus__icon")) {
+function main() {
+    const BONUS_BUTTON_SELECTOR = '[aria-label="Claim Bonus"]';
+    const POINTS_SELECTOR = '[data-test-selector="community-points-summary"]';
+    const BALANCE_SELECTOR = '[data-test-selector="balance-string"]';
+
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (!(node instanceof HTMLElement)) continue;
+
+                if (
+                    node.matches(BONUS_BUTTON_SELECTOR) ||
+                    node.querySelector(BONUS_BUTTON_SELECTOR)
+                ) {
                     // log
                     console.log(
-                        `I clicked for you ${
-                            document
-                                .querySelector(".community-points-summary")
-                                .querySelector('[data-test-selector="balance-string"]').innerText
+                        `😎 I clicked for you ${
+                            document.querySelector(BALANCE_SELECTOR).innerText
                         } ${new Date().toLocaleTimeString()}`
                     );
 
                     // click
-                    addedNode.querySelector("button").click();
+                    if (node.matches(BONUS_BUTTON_SELECTOR)) {
+                        node.click();
+                    } else {
+                        node.querySelector(BONUS_BUTTON_SELECTOR).click();
+                    }
+                }
+
+                if (
+                    node.matches(POINTS_SELECTOR) ||
+                    node.querySelector(POINTS_SELECTOR)
+                ) {
+                    document.querySelector(POINTS_SELECTOR).style.outline =
+                        "1px dashed var(--color-background-button-brand)";
+
+                    console.log("🎁 I started to follow the gift o_o");
                 }
             }
         }
@@ -36,6 +57,6 @@ function startObserver() {
         subtree: true,
         childList: true,
     });
-
-    console.log("I started to follow the gitf o_o");
 }
+
+domready(main);

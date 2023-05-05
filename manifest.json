@@ -1,13 +1,13 @@
 {
-    "name": "Twitch gift autoclick",
-    "description": "Automatic click to +50 gift coin",
-    "version": "1.0",
+    "name": "Twitch gift auto clicker",
+    "description": "Auto click to claim +50 bonus stream coins.",
+    "version": "1.0.0",
     "manifest_version": 3,
     "icons": {
-        "16": "icon.png",
-        "32": "icon.png",
-        "48": "icon.png",
-        "128": "icon.png"
+        "16": "./icons/icon-16.png",
+        "32": "./icons/icon-32.png",
+        "48": "./icons/icon-48.png",
+        "128": "./icons/icon-128.png"
     },
     "content_scripts": [
         {

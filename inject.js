@@ -1,10 +1,7 @@
 // @ts-check
 
-function domready(callback) {
-    if (
-        document.readyState === "complete" ||
-        document.readyState !== "loading"
-    ) {
+function domReady(callback) {
+    if (document.readyState === "complete" || document.readyState !== "loading") {
         callback();
     } else {
         document.addEventListener("DOMContentLoaded", callback);
@@ -21,33 +18,46 @@ function main() {
             for (const node of mutation.addedNodes) {
                 if (!(node instanceof HTMLElement)) continue;
 
-                if (
-                    node.matches(BONUS_BUTTON_SELECTOR) ||
-                    node.querySelector(BONUS_BUTTON_SELECTOR)
-                ) {
+                if (node.matches(BONUS_BUTTON_SELECTOR) || node.querySelector(BONUS_BUTTON_SELECTOR)) {
                     // log
-                    console.log(
-                        `😎 I clicked for you ${
-                            document.querySelector(BALANCE_SELECTOR).innerText
-                        } ${new Date().toLocaleTimeString()}`
-                    );
+                    const balance = document.querySelector(BALANCE_SELECTOR);
+
+                    if (balance instanceof HTMLDivElement) {
+                        console.log(
+                            `[TGAC] 😎 I clicked for you ${balance.innerText} ${new Date().toLocaleTimeString()}`
+                        );
+                    }
 
                     // click
                     if (node.matches(BONUS_BUTTON_SELECTOR)) {
                         node.click();
                     } else {
-                        node.querySelector(BONUS_BUTTON_SELECTOR).click();
+                        const button = node.querySelector(BONUS_BUTTON_SELECTOR);
+
+                        if (button instanceof HTMLButtonElement) {
+                            button.click();
+                        }
                     }
                 }
 
-                if (
-                    node.matches(POINTS_SELECTOR) ||
-                    node.querySelector(POINTS_SELECTOR)
-                ) {
-                    document.querySelector(POINTS_SELECTOR).style.outline =
-                        "1px dashed var(--color-background-button-brand)";
+                if (node.matches(POINTS_SELECTOR) || node.querySelector(POINTS_SELECTOR)) {
+                    const points = document.querySelector(POINTS_SELECTOR);
 
-                    console.log("🎁 I started to follow the gift o_o");
+                    if (points instanceof HTMLDivElement) {
+                        points.style.outline = "1px dashed var(--color-background-button-brand)";
+
+                        const emoji = document.createElement("span");
+                        emoji.style.position = "absolute";
+                        emoji.style.top = "0px";
+                        emoji.style.right = "0px";
+                        emoji.style.pointerEvents = "none";
+                        emoji.style.userSelect = "none";
+                        emoji.style.transform = "translate(50%, -50%)";
+                        emoji.textContent = "👀";
+                        points.appendChild(emoji);
+
+                        console.log("[TGAC] 🎁 I started to follow the gift o_o");
+                    }
                 }
             }
         }
@@ -59,4 +69,4 @@ function main() {
     });
 }
 
-domready(main);
+domReady(main);

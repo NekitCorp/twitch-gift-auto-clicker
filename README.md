@@ -11,5 +11,5 @@ Auto click to claim +50 bonus channel points. The dotted stroke and an eyes emoj
 ## Prepare package
 
 ```sh
-zip -r package.zip icons inject.js manifest.json
+rm package.zip && zip -r package.zip icons inject.js manifest.json
 ```

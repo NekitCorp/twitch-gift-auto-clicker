@@ -27,7 +27,7 @@ function tryToClaimBonus() {
 
     button.click();
 
-    const channel = window.location.pathname.slice(1);
+    const channel = window.location.pathname.split("/")[1];
 
     storage.get(channel).then((data) => {
         const current = data[channel] || 0;

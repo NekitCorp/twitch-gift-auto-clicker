@@ -29,15 +29,22 @@
             }
 
             .container {
-                width: 200px;
-                max-height: 200px;
+                width: 250px;
+                max-height: 250px;
                 overflow: auto;
+                display: grid;
+                gap: 8px;
+            }
+
+            #go-to-options {
+                text-align: center;
             }
         </style>
         <script defer src="popup.js"></script>
     </head>
     <body>
         <div class="container">
+            <a id="go-to-options" href="options.html">Extension options</a>
             <table>
                 <thead>
                     <tr>

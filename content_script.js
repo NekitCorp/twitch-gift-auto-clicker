@@ -1,6 +1,8 @@
 // @ts-check
 
 const REFRESH_INTERVAL = 3 * 1000;
+// @ts-ignore
+const indicatorStorageKey = "#indicator";
 
 // @ts-ignore
 const storage = chrome.storage.local;
@@ -9,7 +11,10 @@ const storage = chrome.storage.local;
  * @param {() => void} callback
  */
 function domReady(callback) {
-    if (document.readyState === "complete" || document.readyState !== "loading") {
+    if (
+        document.readyState === "complete" ||
+        document.readyState !== "loading"
+    ) {
         callback();
     } else {
         document.addEventListener("DOMContentLoaded", callback);
@@ -36,7 +41,9 @@ function tryToClaimBonus() {
 }
 
 function modifyPointsContainer() {
-    const container = document.querySelector('[data-test-selector="community-points-summary"]');
+    const container = document.querySelector(
+        '[data-test-selector="community-points-summary"]'
+    );
 
     if (!(container instanceof HTMLDivElement)) return;
     // already modified
@@ -58,13 +65,17 @@ function modifyPointsContainer() {
 }
 
 function main() {
-    tryToClaimBonus();
-    modifyPointsContainer();
+    storage.get({ [indicatorStorageKey]: true }, (items) => {
+        const indicator = items[indicatorStorageKey];
 
-    setInterval(() => {
         tryToClaimBonus();
-        modifyPointsContainer();
-    }, REFRESH_INTERVAL);
+        if (indicator) modifyPointsContainer();
+
+        setInterval(() => {
+            tryToClaimBonus();
+            if (indicator) modifyPointsContainer();
+        }, REFRESH_INTERVAL);
+    });
 }
 
 domReady(main);

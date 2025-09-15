@@ -4,9 +4,13 @@
 const storage = chrome.storage.local;
 // @ts-ignore
 const tabs = chrome.tabs;
+// @ts-ignore
+const runtime = chrome.runtime;
 
 storage.get().then((data) => {
-    const sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
+    const sortedData = Object.entries(data)
+        .filter(([key]) => !key.startsWith("#")) // Keys starting with # are options.
+        .sort((a, b) => b[1] - a[1]);
     const tbody = document.querySelector("tbody");
 
     if (!(tbody instanceof HTMLTableSectionElement)) return;
@@ -35,3 +39,17 @@ storage.get().then((data) => {
         }
     });
 });
+
+const goToOptions = document.querySelector("#go-to-options");
+
+if (goToOptions instanceof HTMLAnchorElement) {
+    goToOptions.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        if (runtime.openOptionsPage) {
+            runtime.openOptionsPage();
+        } else {
+            window.open(runtime.getURL("options.html"));
+        }
+    });
+}

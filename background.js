@@ -13,6 +13,8 @@ function reloadTabs() {
     });
 }
 
-chrome.runtime.onInstalled.addListener(() => {
-    reloadTabs();
+chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason === "install") {
+        reloadTabs();
+    }
 });

@@ -1,5 +1,8 @@
 {
     "name": "twitch-gift-auto-clicker",
+    "scripts": {
+        "package": "rm -f package.zip && zip -r package.zip icons content_script.js manifest.json popup.html popup.js options.html options.js background.js"
+    },
     "devDependencies": {
         "@types/chrome": "0.1.35"
     }

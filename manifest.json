@@ -11,8 +11,13 @@
     },
     "content_scripts": [
         {
-            "matches": ["*://www.twitch.tv/*", "*://twitch.tv/*"],
-            "js": ["content_script.js"]
+            "matches": [
+                "*://www.twitch.tv/*",
+                "*://twitch.tv/*"
+            ],
+            "js": [
+                "content_script.js"
+            ]
         }
     ],
     "action": {
@@ -22,5 +27,14 @@
         "page": "options.html",
         "open_in_tab": false
     },
-    "permissions": ["storage"]
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": [
+        "storage"
+    ],
+    "host_permissions": [
+        "*://www.twitch.tv/*",
+        "*://twitch.tv/*"
+    ]
 }

@@ -1,18 +1,20 @@
-// @ts-check
+/**
+ * Entry point.
+ */
+function main() {
+    const indicatorStorageKey = "#indicator";
 
-// @ts-ignore
-const storage = chrome.storage.local;
-// @ts-ignore
-const indicatorStorageKey = "#indicator";
+    const indicatorCheckbox = document.getElementById("indicator");
+    if (!(indicatorCheckbox instanceof HTMLInputElement)) return;
 
-const indicatorCheckbox = document.getElementById("indicator");
-
-if (indicatorCheckbox instanceof HTMLInputElement) {
-    storage.get({ [indicatorStorageKey]: true }, (items) => {
+    chrome.storage.local.get({ [indicatorStorageKey]: true }, (items) => {
+        if (typeof items[indicatorStorageKey] !== "boolean") return;
         indicatorCheckbox.checked = items[indicatorStorageKey];
     });
 
     indicatorCheckbox.addEventListener("change", () => {
-        storage.set({ [indicatorStorageKey]: indicatorCheckbox.checked });
+        chrome.storage.local.set({ [indicatorStorageKey]: indicatorCheckbox.checked });
     });
 }
+
+main();

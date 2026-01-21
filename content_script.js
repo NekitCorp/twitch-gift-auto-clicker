@@ -1,12 +1,3 @@
-// @ts-check
-
-const REFRESH_INTERVAL = 3 * 1000;
-// @ts-ignore
-const indicatorStorageKey = "#indicator";
-
-// @ts-ignore
-const storage = chrome.storage.local;
-
 /**
  * @param {() => void} callback
  */
@@ -34,9 +25,9 @@ function tryToClaimBonus() {
 
     const channel = window.location.pathname.split("/")[1];
 
-    storage.get(channel).then((data) => {
-        const current = data[channel] || 0;
-        storage.set({ [channel]: current + 50 });
+    chrome.storage.local.get(channel).then((data) => {
+        const current = typeof data[channel] === "number" ? data[channel] : 0;
+        chrome.storage.local.set({ [channel]: current + 50 });
     });
 }
 
@@ -64,9 +55,15 @@ function modifyPointsContainer() {
     container.appendChild(emoji);
 }
 
+/**
+ * Entry point.
+ */
 function main() {
-    storage.get({ [indicatorStorageKey]: true }, (items) => {
-        const indicator = items[indicatorStorageKey];
+    const REFRESH_INTERVAL = 3 * 1000;
+    const INDICATOR_STORAGE_KEY = "#indicator";
+
+    chrome.storage.local.get({ [INDICATOR_STORAGE_KEY]: true }, (items) => {
+        const indicator = items[INDICATOR_STORAGE_KEY];
 
         tryToClaimBonus();
         if (indicator) modifyPointsContainer();

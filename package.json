@@ -1,0 +1,6 @@
+{
+    "name": "twitch-gift-auto-clicker",
+    "devDependencies": {
+        "@types/chrome": "0.1.35"
+    }
+}

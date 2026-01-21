@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "DOM",
+            "ES2017"
+        ],
+        "checkJs": true,
+        "allowJs": true,
+        "noEmit": true,
+        "isolatedModules": true,
+    }
+}

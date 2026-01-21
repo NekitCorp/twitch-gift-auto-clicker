@@ -1,21 +1,32 @@
-// @ts-check
+/**
+ * Get points from storage items.
+ * @param { Record<string, unknown> } items
+ * @returns { [string, number][] }
+ */
+function getPoints(items) {
+    /** @type { [string, number][] } */
+    const points = [];
 
-// @ts-ignore
-const storage = chrome.storage.local;
-// @ts-ignore
-const tabs = chrome.tabs;
-// @ts-ignore
-const runtime = chrome.runtime;
+    for (const [key, value] of Object.entries(items)) {
+        if (key.startsWith("#")) continue; // Keys starting with # are options.
+        if (typeof value !== "number") continue; // Values must be numbers.
+        points.push([key, value]);
+    }
 
-storage.get().then((data) => {
-    const sortedData = Object.entries(data)
-        .filter(([key]) => !key.startsWith("#")) // Keys starting with # are options.
-        .sort((a, b) => b[1] - a[1]);
+    points.sort((a, b) => b[1] - a[1]);
+
+    return points;
+}
+
+/**
+ * Render points to the table.
+ * @param { [string, number][] } points
+ */
+function renderPoints(points) {
     const tbody = document.querySelector("tbody");
-
     if (!(tbody instanceof HTMLTableSectionElement)) return;
 
-    for (const [channelName, channelPoints] of sortedData) {
+    for (const [channelName, channelPoints] of points) {
         const tr = document.createElement("tr");
         tbody.appendChild(tr);
 
@@ -27,7 +38,7 @@ storage.get().then((data) => {
         tr.appendChild(tdChannel);
 
         const tdPoints = document.createElement("td");
-        tdPoints.textContent = channelPoints;
+        tdPoints.textContent = channelPoints.toString();
         tr.appendChild(tdPoints);
     }
 
@@ -35,21 +46,39 @@ storage.get().then((data) => {
         const target = event.target;
 
         if (target instanceof HTMLAnchorElement) {
-            tabs.create({ url: target.getAttribute("href") });
-        }
-    });
-});
-
-const goToOptions = document.querySelector("#go-to-options");
-
-if (goToOptions instanceof HTMLAnchorElement) {
-    goToOptions.addEventListener("click", (e) => {
-        e.preventDefault();
-
-        if (runtime.openOptionsPage) {
-            runtime.openOptionsPage();
-        } else {
-            window.open(runtime.getURL("options.html"));
+            chrome.tabs.create({ url: target.getAttribute("href") });
         }
     });
 }
+
+/**
+ * Add handlers to the elements.
+ */
+function addHandlers() {
+    const goToOptions = document.querySelector("#go-to-options");
+
+    if (goToOptions instanceof HTMLAnchorElement) {
+        goToOptions.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            if (chrome.runtime.openOptionsPage) {
+                chrome.runtime.openOptionsPage();
+            } else {
+                window.open(chrome.runtime.getURL("options.html"));
+            }
+        });
+    }
+}
+
+/**
+ * Entry point.
+ */
+function main() {
+    chrome.storage.local.get().then((items) => {
+        renderPoints(getPoints(items));
+    });
+
+    addHandlers();
+}
+
+main();
